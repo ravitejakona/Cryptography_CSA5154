@@ -1,0 +1,43 @@
+import string
+
+def create_cipher_dict(key):
+    alphabet = string.ascii_uppercase
+    key = key.upper()
+    cipher_dict = {}
+    for i in range(len(alphabet)):
+        cipher_dict[alphabet[i]] = key[i]
+    return cipher_dict
+def create_inverse_cipher_dict(cipher_dict):
+    inverse_cipher_dict = {v: k for k, v in cipher_dict.items()}
+    return inverse_cipher_dict
+def encrypt(plaintext, key):
+    cipher_dict = create_cipher_dict(key)
+    plaintext = plaintext.upper()
+    encrypted_text = ''
+    for char in plaintext:
+        if char in cipher_dict:
+            encrypted_text += cipher_dict[char]
+        else:
+            encrypted_text += char
+    return encrypted_text
+def decrypt(ciphertext, key):
+    cipher_dict = create_cipher_dict(key)
+    inverse_cipher_dict = create_inverse_cipher_dict(cipher_dict)
+    ciphertext = ciphertext.upper()
+    
+    decrypted_text = ''
+    for char in ciphertext:
+        if char in inverse_cipher_dict:
+            decrypted_text += inverse_cipher_dict[char]
+        else:
+            decrypted_text += char  
+    return decrypted_text
+# Example usage
+key = "QWERTYUIOPASDFGHJKLZXCVBNM"
+plaintext = "keshav reddy"
+ciphertext = encrypt(plaintext, key)
+decrypted_text = decrypt(ciphertext, key)
+print("keshav reddy(192210248)")
+print(f"Original Text: {plaintext}")
+print(f"Encrypted Text: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
