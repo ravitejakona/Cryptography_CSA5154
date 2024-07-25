@@ -1,0 +1,18 @@
+import hashlib
+
+def sha256_hash(data):
+    """
+    Computes the SHA-256 hash of the given data.
+
+    :param data: The input data to hash (must be bytes).
+    :return: The SHA-256 hash of the data as a hexadecimal string.
+    """
+    sha256 = hashlib.sha256()
+    sha256.update(data)
+    return sha256.hexdigest()
+# Example usage
+data = b"Hello, this is a test for SHA-256 hashing."
+hashed_data = sha256_hash(data)
+print("keshav reddy(192210248)")
+print(f"Original Data: {data}")
+print(f"SHA-256 Hash: {hashed_data}")
