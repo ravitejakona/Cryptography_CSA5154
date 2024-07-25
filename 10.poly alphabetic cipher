@@ -1,0 +1,48 @@
+def generate_vigenere_table():
+    table = []
+    for i in range(26):
+        row = [(chr((i + j) % 26 + ord('A'))) for j in range(26)]
+        table.append(row)
+    return table
+def format_key(key, length):
+    key = key.upper()
+    key = (key * (length // len(key))) + key[:length % len(key)]
+    return key
+
+def encrypt(plaintext, key):
+    table = generate_vigenere_table()
+    key = format_key(key, len(plaintext))
+    plaintext = plaintext.upper()
+    
+    ciphertext = ''
+    for p, k in zip(plaintext, key):
+        if p.isalpha():
+            row = ord(k) - ord('A')
+            col = ord(p) - ord('A')
+            ciphertext += table[row][col]
+        else:
+            ciphertext += p  
+    return ciphertext
+def decrypt(ciphertext, key):
+    table = generate_vigenere_table()
+    key = format_key(key, len(ciphertext))
+    ciphertext = ciphertext.upper()
+    
+    plaintext = ''
+    for c, k in zip(ciphertext, key):
+        if c.isalpha():
+            row = ord(k) - ord('A')
+            col = table[row].index(c)
+            plaintext += chr(col + ord('A'))
+        else:
+            plaintext += c  
+    return plaintext
+# Example usage
+key = "KEY"
+plaintext = "cryptography"
+ciphertext = encrypt(plaintext, key)
+decrypted_text = decrypt(ciphertext, key)
+print("keshav reddy (192210248)")
+print(f"Original Text: {plaintext}")
+print(f"Encrypted Text: {ciphertext}")
+print(f"Decrypted Text: {decrypted_text}")
