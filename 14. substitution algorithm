@@ -1,0 +1,45 @@
+def create_substitution_table(key):
+    """
+    Creates a substitution table based on the given key.
+
+    :param key: The key for substitution (string of 26 unique alphabetic characters).
+    :return: A dictionary mapping each letter to its substitution.
+    """
+    import string
+    alphabet = string.ascii_lowercase
+    table = {alphabet[i]: key[i] for i in range(len(alphabet))}
+    return table
+
+def encrypt_substitution(plaintext, key):
+    """
+    Encrypts plaintext using a substitution cipher.
+
+    :param plaintext: The text to encrypt (string).
+    :param key: The key for substitution (string of 26 unique alphabetic characters).
+    :return: The encrypted text (string).
+    """
+    table = create_substitution_table(key)
+    encrypted = ''.join(table.get(char, char) for char in plaintext.lower())
+    return encrypted
+
+def decrypt_substitution(ciphertext, key):
+    """
+    Decrypts text encrypted using a substitution cipher.
+    :param ciphertext: The text to decrypt (string).
+    :param key: The key for substitution (string of 26 unique alphabetic characters).
+    :return: The decrypted text (string).
+    """
+    import string
+    alphabet = string.ascii_lowercase
+    reverse_table = {key[i]: alphabet[i] for i in range(len(alphabet))}
+    decrypted = ''.join(reverse_table.get(char, char) for char in ciphertext.lower())
+    return decrypted
+# Example usage
+key = 'qwertyuiopasdfghjklzxcvbnm'  
+plaintext = 'Hello, World! This is saveetha school of engineering.'
+encrypted = encrypt_substitution(plaintext, key)
+decrypted = decrypt_substitution(encrypted, key)
+print("keshav reddy(192210248)")
+print(f"Original Text: {plaintext}")
+print(f"Encrypted Text: {encrypted}")
+print(f"Decrypted Text: {decrypted}")
