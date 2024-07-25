@@ -1,0 +1,56 @@
+import struct
+WORD_SIZE = 32
+ROUNDS = 12
+KEY_SIZE = 16 
+# RC5 constants
+P = 0xb7e15163
+Q = 0x9e3779b9
+def rotate_left(x, y, w):
+    return ((x << y) & (2**w - 1)) | (x >> (w - y))
+def rotate_right(x, y, w):
+    return (x >> y) | ((x << (w - y)) & (2**w - 1))
+def key_expansion(key):
+    if len(key) != KEY_SIZE:
+        raise ValueError(f'Key must be {KEY_SIZE} bytes long')
+    L = [0] * (KEY_SIZE // 4)
+    for i in range(KEY_SIZE // 4):
+        L[i] = struct.unpack('<I', key[i*4:(i+1)*4])[0]
+    S = [P]
+    for i in range(1, 2*ROUNDS + 2):
+        S.append((S[i-1] + Q) & (2**WORD_SIZE - 1))
+    A = B = i = j = 0
+    for _ in range(3 * max(len(L), len(S))):
+        A = S[i] = rotate_left((S[i] + A + B) & (2**WORD_SIZE - 1), 3, WORD_SIZE)
+        B = L[j] = rotate_left((L[j] + A + B) & (2**WORD_SIZE - 1), (A + B) % WORD_SIZE, WORD_SIZE)
+        i = (i + 1) % len(S)
+        j = (j + 1) % len(L)
+    return S
+def encrypt(plaintext, S):
+    if len(plaintext) != 8:
+        raise ValueError('Plaintext must be 8 bytes long')
+    A = struct.unpack('<I', plaintext[:4])[0] + S[0]
+    B = struct.unpack('<I', plaintext[4:])[0] + S[1]
+    for i in range(1, ROUNDS + 1):
+        A = (rotate_left((A ^ B), B % WORD_SIZE, WORD_SIZE) + S[2*i]) & (2**WORD_SIZE - 1)
+        B = (rotate_left((B ^ A), A % WORD_SIZE, WORD_SIZE) + S[2*i + 1]) & (2**WORD_SIZE - 1)
+    return struct.pack('<II', A, B)
+def decrypt(ciphertext, S):
+    if len(ciphertext) != 8:
+        raise ValueError('Ciphertext must be 8 bytes long')
+    A, B = struct.unpack('<II', ciphertext)
+    for i in range(ROUNDS, 0, -1):
+        B = rotate_right((B - S[2*i + 1]) & (2**WORD_SIZE - 1), A % WORD_SIZE, WORD_SIZE) ^ A
+        A = rotate_right((A - S[2*i]) & (2**WORD_SIZE - 1), B % WORD_SIZE, WORD_SIZE) ^ B
+    B = (B - S[1]) & (2**WORD_SIZE - 1)
+    A = (A - S[0]) & (2**WORD_SIZE - 1)
+    return struct.pack('<II', A, B)
+# Example usage
+key = b'SampleRC5Key1234'  
+plaintext = b'12345678'    
+S = key_expansion(key)
+ciphertext = encrypt(plaintext, S)
+decrypted = decrypt(ciphertext, S)
+print("keshav reddy (192210248)")
+print(f'Plaintext: {plaintext}')
+print(f'Ciphertext: {ciphertext}')
+print(f'Decrypted: {decrypted}')
