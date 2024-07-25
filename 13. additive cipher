@@ -1,0 +1,37 @@
+def encrypt_additive_cipher(plaintext, shift):
+    """
+    Encrypts plaintext using an additive cipher (Caesar cipher).
+
+    :param plaintext: The text to encrypt (string).
+    :param shift: The number of positions to shift (integer).
+    :return: The encrypted text (string).
+    """
+    encrypted = []
+    for char in plaintext:
+        if char.isalpha():
+            shift_amount = shift % 26
+            if char.islower():
+                encrypted_char = chr((ord(char) - ord('a') + shift_amount) % 26 + ord('a'))
+            elif char.isupper():
+                encrypted_char = chr((ord(char) - ord('A') + shift_amount) % 26 + ord('A'))
+            encrypted.append(encrypted_char)
+        else:
+            encrypted.append(char)
+    return ''.join(encrypted)
+def decrypt_additive_cipher(ciphertext, shift):
+    """
+    Decrypts text encrypted using an additive cipher (Caesar cipher).
+    :param ciphertext: The text to decrypt (string).
+    :param shift: The number of positions to shift (integer).
+    :return: The decrypted text (string).
+    """
+    return encrypt_additive_cipher(ciphertext, -shift)
+# Example usage
+shift = 3
+plaintext = "Hello, World! This is a test of the additive cipher."
+encrypted = encrypt_additive_cipher(plaintext, shift)
+decrypted = decrypt_additive_cipher(encrypted, shift)
+print("keshav reddy (192210248)")
+print(f"Original Text: {plaintext}")
+print(f"Encrypted Text: {encrypted}")
+print(f"Decrypted Text: {decrypted}")
